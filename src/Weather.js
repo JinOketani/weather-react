@@ -8,6 +8,7 @@ import MenuItem from 'material-ui/MenuItem'
 import RefreshIndicator from 'material-ui/RefreshIndicator'
 import WeatherIcon from 'material-ui/svg-icons/image/wb-sunny'
 import TemperatureIcon from 'material-ui/svg-icons/editor/show-chart'
+import WindIcon from 'material-ui/svg-icons/image/wb-cloudy'
 import './Weather.css';
 
 class WeatherPage extends Component {
@@ -27,7 +28,7 @@ class WeatherPage extends Component {
   selectPlace(index) {
     if (index > 0) {
       const place = this.Places[index - 1]
-      this.setState({placeName: place.name, weather: null, temperature: null, loading: true})
+      this.setState({placeName: place.name, weather: null, temperature: null, wind: null, loading: true})
       this.getWeather(place.id)
     }
   }
@@ -41,6 +42,7 @@ class WeatherPage extends Component {
           .then(() => this.setState({
             weather: json.weather[0].description,
             temperature: json.main.temp,
+            wind: json.wind.speed,
             loading: false
           }))
       })
@@ -58,7 +60,8 @@ class WeatherPage extends Component {
           <CardText style={{position: 'relative'}}>
             <RefreshIndicator status={this.state.loading ? 'loading' : 'hide'} top={40} left={100}
                               loadingColor="#2196f3"/>
-            <WeatherInfomation weather={this.state.weather} temperature={this.state.temperature}/>
+            <WeatherInfomation weather={this.state.weather} temperature={this.state.temperature}
+                               wind={this.state.wind}/>
           </CardText>
           <CardActions>
             <PlaceSelector places={this.Places} actionSelect={(ix) => this.selectPlace(ix)}/>
@@ -82,6 +85,7 @@ const WeatherInfomation = (props) => {
     <List>
       <ListItem leftIcon={<WeatherIcon/>} primaryText={props.weather}/>
       <ListItem leftIcon={<TemperatureIcon/>} primaryText={props.temperature ? `${props.temperature}℃` : ''}/>
+      <ListItem leftIcon={<WindIcon/>} primaryText={props.wind ? `${props.wind}㎳` : '風速'}/>
     </List>
   )
 }
